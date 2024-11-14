@@ -6,7 +6,6 @@ import scipy.signal as sig
 import matplotlib.pyplot as plt
 import scipy.io as sio
 from itertools import accumulate
-%matplotlib Qt
 
 # Para listar las variables que hay en el archivo
 sio.whosmat("ECG_TP4.mat")
@@ -23,25 +22,25 @@ N = 10000
 w = 5
 # %%
 ecg_one_lead_20 = ecg_one_lead[:N]
-df_p = (fs/N)
+df_p = fs / N
 df_w = df_p * w
 
 # 1. Periodograma
-signal_spectrum = (1/N)*np.fft.fft(ecg_one_lead_20)
-Pxx_period_full = abs(signal_spectrum[:int(N/2)])**2
-Pxx_period = Pxx_period_full[:int(N/2)]
+signal_spectrum = (1 / N) * np.fft.fft(ecg_one_lead_20)
+Pxx_period_full = abs(signal_spectrum[: int(N / 2)]) ** 2
+Pxx_period = Pxx_period_full[: int(N / 2)]
 f_period = np.linspace(0, (N - 1) * df_p, N)
 
 # 2. Welch
-f_welch, Pxx_welch = sig.welch(ecg_one_lead_20, fs=fs, nperseg=(N/w))
+f_welch, Pxx_welch = sig.welch(ecg_one_lead_20, fs=fs, nperseg=(N / w))
 
 # %%
 # Plotting the results to compare them in the same graph
 plt.figure(figsize=(12, 6))
 
 # Plot both Periodogram and Welch's method in the same graph
-plt.plot(f_period[:int(N/2)], Pxx_period, label="Periodogram")
-plt.plot(f_welch,  Pxx_welch, label="Welch", color="orange")
+plt.plot(f_period[: int(N / 2)], Pxx_period, label="Periodogram")
+plt.plot(f_welch, Pxx_welch, label="Welch", color="orange")
 
 # Set titles and labels
 plt.title("PSD Estimate Comparison: Periodogram vs Welch")
@@ -58,10 +57,10 @@ plt.show()
 # %%
 
 # %%
-norm_p = (Pxx_period.sum())
+norm_p = Pxx_period.sum()
 Pxx_period_normalized = Pxx_period / norm_p
 
-norm_w = (Pxx_welch.sum())
+norm_w = Pxx_welch.sum()
 Pxx_welch_normalized = Pxx_welch / norm_w
 
 # %%
@@ -69,8 +68,8 @@ Pxx_welch_normalized = Pxx_welch / norm_w
 plt.figure(figsize=(12, 6))
 
 # Plot both Periodogram and Welch's method in the same graph
-plt.plot(f_period[:int(N/2)], Pxx_period_normalized, label="Periodogram Normalized")
-plt.plot(f_welch,  Pxx_welch_normalized, label="Welch Normalized", color="orange")
+plt.plot(f_period[: int(N / 2)], Pxx_period_normalized, label="Periodogram Normalized")
+plt.plot(f_welch, Pxx_welch_normalized, label="Welch Normalized", color="orange")
 
 # Set titles and labels
 plt.title("PSD Estimate Comparison: Periodogram vs Welch")
@@ -97,8 +96,10 @@ Pxx_welch_normalized_db = 10 * np.log(Pxx_welch_normalized)
 plt.figure(figsize=(12, 6))
 
 # Plot both Periodogram and Welch's method in the same graph
-plt.plot(f_period[:int(N/2)], Pxx_period_normalized_db, label="Periodogram Normalized")
-plt.plot(f_welch,  Pxx_welch_normalized_db, label="Welch Normalized", color="orange")
+plt.plot(
+    f_period[: int(N / 2)], Pxx_period_normalized_db, label="Periodogram Normalized"
+)
+plt.plot(f_welch, Pxx_welch_normalized_db, label="Welch Normalized", color="orange")
 
 # Set titles and labels
 plt.title("PSD Estimate Comparison: Periodogram vs Welch")
@@ -116,18 +117,20 @@ plt.show()
 p_bw = 0.5
 
 p_cumulative = np.array(list(accumulate(Pxx_period_normalized)))
-p_index = np.argmax(p_cumulative >= p_bw) 
+p_index = np.argmax(p_cumulative >= p_bw)
 
 w_bw = 0.5
 
 w_cumulative = np.array(list(accumulate(Pxx_welch_normalized)))
-w_index = np.argmax(w_cumulative >= w_bw) 
+w_index = np.argmax(w_cumulative >= w_bw)
 # %%
 # Plotting the results to compare them in the same graph
 plt.figure(figsize=(12, 6))
 
 # Plot both Periodogram and Welch's method in the same graph
-plt.plot(f_period[:p_index], Pxx_period_normalized[:p_index], label="Periodogram filtered")
+plt.plot(
+    f_period[:p_index], Pxx_period_normalized[:p_index], label="Periodogram filtered"
+)
 
 # Set titles and labels
 plt.xlabel("Frequency [Hz]")
@@ -145,7 +148,9 @@ plt.show()
 plt.figure(figsize=(12, 6))
 
 # Plot both Periodogram and Welch's method in the same graph
-plt.plot(f_welch[:w_index], Pxx_welch_normalized[:w_index], label="Periodogram filtered")
+plt.plot(
+    f_welch[:w_index], Pxx_welch_normalized[:w_index], label="Periodogram filtered"
+)
 
 # Set titles and labels
 plt.xlabel("Frequency [Hz]")
@@ -170,7 +175,7 @@ plt.figure(figsize=(12, 6))
 
 # Plot both Periodogram and Welch's method in the same graph
 plt.plot(f_period, filtered_ecg_spectrum, label="filtered signal")
-#plt.plot(ecg_one_lead_20, label=" signal")
+# plt.plot(ecg_one_lead_20, label=" signal")
 
 
 # Set titles and labels
